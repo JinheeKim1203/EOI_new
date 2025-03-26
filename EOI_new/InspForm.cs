@@ -184,13 +184,27 @@ namespace EOI_new
                 if (roiRect.IsEmpty == true)
                     return;
 
-                //전체 이미지에서 ROI 영역만을 roiImage에 저장
+                ////전체 이미지에서 ROI 영역만을 roiImage에 저장
                 Mat roiImage = new Mat(currentImage, new Rect(roiRect.X, roiRect.Y, roiRect.Width, roiRect.Height));
 
-                //현재 실행파일이 있는 경로에, 저장할 경로 만들기
-                string savePath = Path.Combine(Directory.GetCurrentDirectory(), Define.ROI_IMAGE_NAME);
-                //이미지 저장
+                ////현재 실행파일이 있는 경로에, 저장할 경로 만들기
+                //string savePath = Path.Combine(Directory.GetCurrentDirectory(), Define.TEMPLATE_FOLDER);
+                ////이미지 저장
+                //Cv2.ImWrite(savePath, roiImage);
+
+                // ✅ 선택된 ROI에 연결된 InspWindow의 UID를 사용
+                InspWindow selectedWindow = imageViewer.GetSelectedWindow();
+                if (selectedWindow == null)
+                {
+                    MessageBox.Show("저장할 ROI가 선택되지 않았습니다.");
+                    return;
+                }
+
+                string uid = selectedWindow.UID;
+                string savePath = Define.GetTemplateFilePathFromUid(uid); // "Template/BAS_000001.png"
                 Cv2.ImWrite(savePath, roiImage);
+
+                MessageBox.Show($"ROI 저장 완료: {savePath}");
             }
         }
 
@@ -263,6 +277,11 @@ namespace EOI_new
             imageViewer.DiagramEntityEvent -= ImageViewer_ModifyROI;
 
             this.FormClosed -= InspForm_FormClosed;
+        }
+
+        public InspWindow GetSelectedWindow()
+        {
+            return imageViewer.GetSelectedWindow(); // ← imageViewer는 InspForm 내부에 있음
         }
 
 

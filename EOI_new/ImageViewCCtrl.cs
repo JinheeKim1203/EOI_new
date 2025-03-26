@@ -1002,6 +1002,11 @@ namespace EOI_new
                 virtualPos.Y * _curZoom + offset.Y);
         }
         #endregion
+
+        public InspWindow GetSelectedWindow()
+        {
+            return _selEntity?.LinkedWindow;
+        }
     }
 
     #region EventArgs
@@ -1040,5 +1045,6 @@ namespace EOI_new
     }
 
     #endregion
+
 
 }

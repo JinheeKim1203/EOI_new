@@ -83,17 +83,25 @@ namespace EOI_new.Teach
 
                 MatchAlgorithm matchAlgo = (MatchAlgorithm)algorithm;
 
-                string templatePath = Path.Combine(Directory.GetCurrentDirectory(), Define.ROI_IMAGE_NAME);
+                // ✅ 현재 InspWindow의 UID로 파일 경로 생성
+                string uid = this.UID; // ← InspWindow UID
+                string templatePath = Define.GetTemplateFilePathFromUid(uid);
+
                 if (File.Exists(templatePath))
                 {
                     _teachingImage = Cv2.ImRead(templatePath);
-
-                    if (_teachingImage != null)
+                    if (_teachingImage != null && !_teachingImage.Empty())
                         matchAlgo.SetTemplateImage(_teachingImage);
+                }
+                else
+                {
+                    Console.WriteLine($"[PatternLearn] 템플릿 이미지 없음: {templatePath}");
+                    return false;
                 }
             }
 
             return true;
+
         }
 
         //#ABSTRACT ALGORITHM#10 타입에 따라 알고리즘을 추가하는 함수

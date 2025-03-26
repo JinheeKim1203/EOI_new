@@ -85,6 +85,13 @@ namespace EOI_new.Property
         private void btnTeach_Click(object sender, EventArgs e)
         {
             InspWindow _inspWindow = Global.Inst.InspStage.InspWindow;
+
+            if (_inspWindow == null)
+            {
+                MessageBox.Show("선택된 ROI가 없습니다.");
+                return;
+            }
+
             if (_inspWindow.PatternLearn())
                 MessageBox.Show("티칭 성공");
             else
