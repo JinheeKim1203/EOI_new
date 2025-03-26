@@ -176,7 +176,8 @@ namespace EOI_new
         private void btnSave_Click(object sender, EventArgs e)
         {
             //# SAVE ROI#5 현재 채널 이미지에서, 설정된 ROI 영역을 파일로 저장
-            OpenCvSharp.Mat currentImage = Global.Inst.InspStage.GetMat(0, _currentImageChannel);
+            OpenCvSharp.Mat currentImage = Global.Inst.InspStage.GetMat
+                (0, _currentImageChannel);
             if(currentImage != null )
             {
                 //현재 설정된 ROI 영역을 가져옴
