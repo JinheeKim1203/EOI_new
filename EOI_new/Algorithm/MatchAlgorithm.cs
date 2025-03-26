@@ -1,4 +1,5 @@
 ﻿using EOI_new.Core;
+using EOI_new.Teach;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,8 @@ namespace EOI_new.Algorithm
         public int MatchCount { get; set; } = 1;
 
         private int _scanStep = 4; // 검색 간격 (SCAN 값)
+
+        public InspWindow OwnerWindow { get; set; }
 
         public MatchAlgorithm()
         {
@@ -175,16 +178,95 @@ namespace EOI_new.Algorithm
             return matchedPositions.Count;
         }
 
+        // ✅ 여러 템플릿 중 최적 single 찾기
+        public bool MatchTemplateBestSingle(Mat image, List<Mat> templateList)
+        {
+            if (templateList == null || templateList.Count == 0)
+                return false;
+
+            Mat bestTemplate = null;
+            int bestScore = 60;
+            Point bestPoint = new Point(0,0);
+
+            foreach (var template in templateList)
+            {
+                SetTemplateImage(template);
+                if (MatchTemplateSingle(image))
+                {
+                    if (OutScore > bestScore)
+                    {
+                        bestScore = OutScore;
+                        bestTemplate = template.Clone();
+                        bestPoint = OutPoint;
+                    }
+                }
+            }
+
+            if (bestTemplate != null)
+            {
+                SetTemplateImage(bestTemplate);
+                OutScore = bestScore;
+                OutPoint = bestPoint;
+                return true;
+            }
+
+            return false;
+        }
+
+        // ✅ 여러 템플릿으로 multiple 매칭 수행
+        public int MatchTemplateBestMultiple(Mat image, List<Mat> templateList, out List<Point> matchedPoints)
+        {
+            matchedPoints = new List<Point>();
+            if (templateList == null || templateList.Count == 0)
+                return 0;
+
+            List<Point> allMatches = new List<Point>();
+
+            foreach (var template in templateList)
+            {
+                SetTemplateImage(template);
+                if (MatchTemplateMultiple(image, out List<Point> points) > 0)
+                    allMatches.AddRange(points);
+            }
+
+            OutPoints = allMatches;
+            return allMatches.Count;
+        }
+
+
+
+
+
         //#ABSTRACT ALGORITHM#3 매칭 알고리즘 검사 구현
         public override bool DoInspect()
         {
             IsInspected = false;
 
             Mat srcImage = Global.Inst.InspStage.GetMat();
+            if (srcImage == null || srcImage.Empty())
+                return false;
+
+            // 템플릿 리스트 로딩
+
+            string uid = OwnerWindow?.UID;
+
+            if (string.IsNullOrEmpty(uid))
+            {
+                Console.WriteLine("[DoInspect] UID가 없습니다 (OwnerWindow 연결 확인 필요)");
+                return false;
+            }
+            //string uid = Global.Inst.InspStage.InspWindow?.UID;
+            List<Mat> templates = Define.LoadTemplateListByUid(uid);
+
+            if (templates == null || templates.Count == 0)
+            {
+                Console.WriteLine("[DoInspect] 템플릿 없음");
+                return false;
+            }
 
             if (MatchCount == 1)
             {
-                if (MatchTemplateSingle(srcImage) == false)
+                if (!MatchTemplateBestSingle(srcImage, templates))
                     return false;
 
                 OutPoints.Clear();
@@ -192,12 +274,16 @@ namespace EOI_new.Algorithm
             }
             else
             {
-                List<Point> outPoints = new List<Point>();
-                int matchCount = MatchTemplateMultiple(srcImage, out outPoints);
-                if (matchCount <= 0)
+                //List<Point> outPoints = new List<Point>();
+                //int matchCount = MatchTemplateMultiple(srcImage, out outPoints);
+                //if (matchCount <= 0)
+                //    return false;
+                List<Point> points;
+                int count = MatchTemplateBestMultiple(srcImage, templates, out points);
+                if (count <= 0)
                     return false;
 
-                OutPoints = outPoints;
+                OutPoints = points;
             }
 
             IsInspected = true;

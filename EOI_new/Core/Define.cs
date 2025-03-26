@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenCvSharp;
 
 namespace EOI_new.Core
 {
@@ -48,6 +49,40 @@ namespace EOI_new.Core
             string folder = GetTemplateFolderPath();
             string filePath = Path.Combine(folder, $"{uid}.jpg");
             return filePath;
+        }
+
+        public static List<Mat> LoadTemplateListByUid(string uid)
+        {
+            string folder = GetTemplateFolderPath();
+            string[] files = Directory.GetFiles(folder, $"{uid}_*.jpg");
+
+            List<Mat> templates = new List<Mat>();
+            foreach (var file in files)
+            {
+                Mat img = Cv2.ImRead(file);
+                if (img != null && !img.Empty())
+                {
+                    templates.Add(img);
+                }
+            }
+
+            return templates;
+        }
+
+        public static string GetNextTemplateFilePath(string uid)
+        {
+            string folder = GetTemplateFolderPath();
+            int index = 1;
+            string path;
+
+            do
+            {
+                string fileName = $"{uid}_{index}.jpg";
+                path = Path.Combine(folder, fileName);
+                index++;
+            } while (File.Exists(path));
+
+            return path;
         }
     }
 }

@@ -84,7 +84,15 @@ namespace EOI_new.Property
         //#MATCH PROP#9 저장된 ROI이미지 로딩
         private void btnTeach_Click(object sender, EventArgs e)
         {
-            InspWindow _inspWindow = Global.Inst.InspStage.InspWindow;
+            // 실제 UI에서 선택한 ROI 가져오기
+            InspForm form = MainForm.GetDockForm<InspForm>();
+            if (form == null)
+            {
+                MessageBox.Show("InspForm이 열려 있지 않습니다.");
+                return;
+            }
+
+            InspWindow _inspWindow = form.GetSelectedWindow(); // ✅ 여기 핵심
 
             if (_inspWindow == null)
             {
@@ -96,6 +104,7 @@ namespace EOI_new.Property
                 MessageBox.Show("티칭 성공");
             else
                 MessageBox.Show("티칭 실패");
+        
         }
     }
 }

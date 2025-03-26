@@ -201,7 +201,10 @@ namespace EOI_new
                 }
 
                 string uid = selectedWindow.UID;
-                string savePath = Define.GetTemplateFilePathFromUid(uid); // "Template/BAS_000001.png"
+                //string savePath = Define.GetTemplateFilePathFromUid(uid); // "Template/BAS_000001.png"
+                //Cv2.ImWrite(savePath, roiImage);
+
+                string savePath = Define.GetNextTemplateFilePath(uid); // ✅ 자동 넘버링
                 Cv2.ImWrite(savePath, roiImage);
 
                 MessageBox.Show($"ROI 저장 완료: {savePath}");

@@ -75,29 +75,67 @@ namespace EOI_new.Teach
 
         //#MATCH PROP#4 템플릿 매칭 이미지 로딩
         public bool PatternLearn()
-        { 
-            foreach (var algorithm in AlgorithmList)
+        {
+            //foreach (var algorithm in AlgorithmList)
+            //{
+            //    if (algorithm.InspectType != InspectType.InspMatch)
+            //        continue;
+
+            //    MatchAlgorithm matchAlgo = (MatchAlgorithm)algorithm;
+
+            //    // ✅ 현재 InspWindow의 UID로 파일 경로 생성
+            //    string uid = this.UID; // ← InspWindow UID
+            //    string templatePath = Define.GetTemplateFilePathFromUid(uid);
+
+            //    if (File.Exists(templatePath))
+            //    {
+            //        _teachingImage = Cv2.ImRead(templatePath);
+            //        if (_teachingImage != null && !_teachingImage.Empty())
+            //            matchAlgo.SetTemplateImage(_teachingImage);
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine($"[PatternLearn] 템플릿 이미지 없음: {templatePath}");
+            //        return false;
+            //    }
+            //}
+
+            var matchAlgo = (MatchAlgorithm)FindInspAlgorithm(InspectType.InspMatch);
+            if (matchAlgo == null)
+                return false;
+
+            string uid = this.UID;
+            List<Mat> templates = Define.LoadTemplateListByUid(uid);
+
+            if (templates == null || templates.Count == 0)
             {
-                if (algorithm.InspectType != InspectType.InspMatch)
-                    continue;
+                Console.WriteLine($"[PatternLearn] 템플릿 이미지 없음: {uid}");
+                return false;
+            }
 
-                MatchAlgorithm matchAlgo = (MatchAlgorithm)algorithm;
+            Mat inputImage = Global.Inst.InspStage.GetMat();
 
-                // ✅ 현재 InspWindow의 UID로 파일 경로 생성
-                string uid = this.UID; // ← InspWindow UID
-                string templatePath = Define.GetTemplateFilePathFromUid(uid);
-
-                if (File.Exists(templatePath))
+            if (matchAlgo.MatchCount == 1)
+            {
+                // Single 모드
+                if (!matchAlgo.MatchTemplateBestSingle(inputImage, templates))
                 {
-                    _teachingImage = Cv2.ImRead(templatePath);
-                    if (_teachingImage != null && !_teachingImage.Empty())
-                        matchAlgo.SetTemplateImage(_teachingImage);
-                }
-                else
-                {
-                    Console.WriteLine($"[PatternLearn] 템플릿 이미지 없음: {templatePath}");
+                    Console.WriteLine("[PatternLearn] Single 모드 티칭 실패");
                     return false;
                 }
+            }
+            else
+            {
+                // Multiple 모드
+                List<OpenCvSharp.Point> points;
+                int count = matchAlgo.MatchTemplateBestMultiple(inputImage, templates, out points);
+                if (count == 0)
+                {
+                    Console.WriteLine("[PatternLearn] Multiple 모드 티칭 실패");
+                    return false;
+                }
+
+                matchAlgo.OutPoints = points;
             }
 
             return true;
@@ -124,6 +162,9 @@ namespace EOI_new.Teach
 
             if (inspAlgo is null)
                 return false;
+
+            if (inspAlgo is MatchAlgorithm matchAlgo)
+                matchAlgo.OwnerWindow = this;
 
             AlgorithmList.Add(inspAlgo);
 
