@@ -330,6 +330,7 @@ namespace EOI_new.Core
             UpdateDiagramEntity();
         }
 
+        //#ALIGN#
         //입력된 윈도우 이동
         public void MoveInspWindow(InspWindow inspWindow, OpenCvSharp.Point offset)
         {

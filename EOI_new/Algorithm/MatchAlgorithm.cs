@@ -204,6 +204,20 @@ namespace EOI_new.Algorithm
             return false;
         }
 
+        //#ALIGN#
+        public Point GetOffset()
+        {
+            Point offset = new Point(0, 0);
+
+            if (IsInspected)
+            {
+                offset.X = OutPoint.X - InspRect.X;
+                offset.Y = OutPoint.Y - InspRect.Y;
+            }
+
+            return offset;
+        }
+
         //#ABSTRACT ALGORITHM#4 매칭 검사로 찾을 Rect 리스트 반환
         public override int GetResultRect(out List<Rect> resultArea)
         {

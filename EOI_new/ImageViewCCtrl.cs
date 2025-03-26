@@ -164,6 +164,7 @@ namespace EOI_new
             _selColor = GetWindowColor(inspWindowType);
         }
 
+        //#ALIGN#
         private void ResizeCanvas()
         {
             if (Width <= 0 || Height <= 0 || _bitmapImage == null)
