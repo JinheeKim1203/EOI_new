@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using OpenCvSharp;
 using EOI_new.Algorithm;
 
+
 namespace EOI_new.Property
 {
     /*
@@ -22,8 +23,11 @@ namespace EOI_new.Property
     [매칭갯수]는 찾고자 하는 패턴의 갯수를 입력
      */
 
+
     public partial class MatchInspProp : UserControl
     {
+        private InspWindow _lastTaughtWindow;  // 티칭한 ROI 저장
+
         public MatchInspProp()
         {
             InitializeComponent();
@@ -57,12 +61,17 @@ namespace EOI_new.Property
         //#MATCH PROP#10 템플릿 매칭 실행
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            InspWindow inspWindow = Global.Inst.InspStage.InspWindow;
-            if(inspWindow is null) 
+            //InspWindow inspWindow = Global.Inst.InspStage.InspWindow;
+            //if(inspWindow is null) 
+            //    return;
+            if (_lastTaughtWindow == null)
+            {
+                MessageBox.Show("먼저 티칭을 진행해주세요.");
                 return;
+            }
 
             //#INSP WORKER#11 inspWindow에서 매칭 알고리즘 찾는 코드 추가
-            MatchAlgorithm matchAlgo = (MatchAlgorithm)inspWindow.FindInspAlgorithm(InspectType.InspMatch);
+            MatchAlgorithm matchAlgo = (MatchAlgorithm)_lastTaughtWindow.FindInspAlgorithm(InspectType.InspMatch);
             if (matchAlgo is null)
                 return; 
 
@@ -78,7 +87,7 @@ namespace EOI_new.Property
             matchAlgo.MatchScore = matchScore;
             matchAlgo.MatchCount = matchCount;
 
-            Global.Inst.InspStage.InspWorker.TryInspect(inspWindow, InspectType.InspMatch);
+            Global.Inst.InspStage.InspWorker.TryInspect(_lastTaughtWindow, InspectType.InspMatch);
         }
 
         //#MATCH PROP#9 저장된 ROI이미지 로딩
@@ -101,7 +110,10 @@ namespace EOI_new.Property
             }
 
             if (_inspWindow.PatternLearn())
+            {
+                _lastTaughtWindow = _inspWindow;
                 MessageBox.Show("티칭 성공");
+            }
             else
                 MessageBox.Show("티칭 실패");
         

@@ -4,6 +4,7 @@ using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,6 +35,7 @@ namespace EOI_new.Algorithm
         private int _scanStep = 4; // 검색 간격 (SCAN 값)
 
         public InspWindow OwnerWindow { get; set; }
+
 
         public MatchAlgorithm()
         {
@@ -185,7 +187,7 @@ namespace EOI_new.Algorithm
                 return false;
 
             Mat bestTemplate = null;
-            int bestScore = 60;
+            int bestScore = MatchScore;
             Point bestPoint = new Point(0,0);
 
             foreach (var template in templateList)

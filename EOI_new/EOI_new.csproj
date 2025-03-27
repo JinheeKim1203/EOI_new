@@ -129,7 +129,6 @@
     <Compile Include="Algorithm\FmInspAlgorithm.cs" />
     <Compile Include="Algorithm\InspAlgorithm.cs" />
     <Compile Include="Algorithm\MatchAlgorithm.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="InspForm.cs">
       <SubType>Form</SubType>
     </Compile>

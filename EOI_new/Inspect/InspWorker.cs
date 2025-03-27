@@ -91,6 +91,12 @@ namespace EOI_new.Inspect
 
                         Mat srcImage = Global.Inst.InspStage.GetMat();
                         matchAlgo.SetInspData(srcImage);
+                        // 🔥 여기 추가! match알고리즘에 OwnerWindow 연결
+                        if (matchAlgo.OwnerWindow == null && Global.Inst.InspStage.InspWindow != null)
+                        {
+                            matchAlgo.OwnerWindow = Global.Inst.InspStage.InspWindow;
+                            Console.WriteLine($"[UpdateInspData] OwnerWindow 연결 완료: {matchAlgo.OwnerWindow.UID}");
+                        }
                         break;
                     }
                 default:
