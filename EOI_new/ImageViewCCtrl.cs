@@ -134,20 +134,24 @@ namespace EOI_new
 
             switch (inspWindowType)
             {
-                case InspWindowType.ID:
+                case InspWindowType.Base:
                     color = Color.Orange;
                     break;
 
-                case InspWindowType.PinHeader:
+                case InspWindowType.Sub:
                     color = Color.Magenta;
                     break;
 
-                case InspWindowType.ICChip:
+                case InspWindowType.ID:
                     color = Color.Cyan;
                     break;
 
-                case InspWindowType.Lead:
+                case InspWindowType.Head:
                     color = Color.Yellow;
+                    break;
+
+                case InspWindowType.Body:
+                    color = Color.Lavender;
                     break;
             }
             return color;

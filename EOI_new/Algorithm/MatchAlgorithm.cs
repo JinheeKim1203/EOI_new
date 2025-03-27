@@ -235,6 +235,10 @@ namespace EOI_new.Algorithm
             return allMatches.Count;
         }
 
+
+
+
+
         //#ABSTRACT ALGORITHM#3 매칭 알고리즘 검사 구현
         public override bool DoInspect()
         {
