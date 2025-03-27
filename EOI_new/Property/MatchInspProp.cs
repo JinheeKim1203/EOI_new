@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
 using EOI_new.Algorithm;
+using OpenCvSharp.Extensions;
 
 namespace EOI_new.Property
 {
@@ -24,35 +25,45 @@ namespace EOI_new.Property
 
     public partial class MatchInspProp : UserControl
     {
+        public event EventHandler<EventArgs> PropertyChanged;
+
+        MatchAlgorithm _matchAlgo = null;
         public MatchInspProp()
         {
             InitializeComponent();
 
-            //#MATCH PROP#8 템플릿 매칭 속성값을 GUI에 설정
-            LoadInspParam();
+            txtExtendX.Leave += OnUpdateValue;
+            txtExtendY.Leave += OnUpdateValue;
+            txtScore.Leave += OnUpdateValue;
+            txtMatchCount.Leave += OnUpdateValue;
+        }
+        public void SetAlgorithm(MatchAlgorithm matchAlgo)
+        {
+            _matchAlgo = matchAlgo;
+            SetProperty();
         }
 
         //#MATCH PROP#7 템플릿 매칭 속성값을 GUI에 설정
-        public void LoadInspParam()
-        {
-            InspWindow inspWindow = Global.Inst.InspStage.InspWindow;
-            if (inspWindow is null)
-                return;
+        //public void LoadInspParam()
+        //{
+        //    InspWindow inspWindow = Global.Inst.InspStage.InspWindow;
+        //    if (inspWindow is null)
+        //        return;
 
-            //#INSP WORKER#14 inspWindow에서 매칭 알고리즘 찾는 코드
-            MatchAlgorithm matchAlgo = (MatchAlgorithm)inspWindow.FindInspAlgorithm(InspectType.InspMatch);
-            if (matchAlgo is null)
-                return;
+        //    //#INSP WORKER#14 inspWindow에서 매칭 알고리즘 찾는 코드
+        //    MatchAlgorithm matchAlgo = (MatchAlgorithm)inspWindow.FindInspAlgorithm(InspectType.InspMatch);
+        //    if (matchAlgo is null)
+        //        return;
 
-            OpenCvSharp.Size extendSize = matchAlgo.ExtSize;
-            int matchScore = matchAlgo.MatchScore;
-            int matchCount = matchAlgo.MatchCount;
+        //    OpenCvSharp.Size extendSize = matchAlgo.ExtSize;
+        //    int matchScore = matchAlgo.MatchScore;
+        //    int matchCount = matchAlgo.MatchCount;
 
-            txtExtendX.Text = extendSize.Width.ToString();
-            txtExtendY.Text = extendSize.Height.ToString();
-            txtScore.Text = matchScore.ToString();
-            txtMatchCount.Text = matchCount.ToString();
-        }
+        //    txtExtendX.Text = extendSize.Width.ToString();
+        //    txtExtendY.Text = extendSize.Height.ToString();
+        //    txtScore.Text = matchScore.ToString();
+        //    txtMatchCount.Text = matchCount.ToString();
+        //}
 
         //#MATCH PROP#10 템플릿 매칭 실행
         private void btnSearch_Click(object sender, EventArgs e)
@@ -85,10 +96,87 @@ namespace EOI_new.Property
         private void btnTeach_Click(object sender, EventArgs e)
         {
             InspWindow _inspWindow = Global.Inst.InspStage.InspWindow;
-            if (_inspWindow.PatternLearn())
-                MessageBox.Show("티칭 성공");
+            if (Global.Inst == null)
+            {
+                MessageBox.Show("Global 인스턴스가 null입니다.");
+            }
+            else if (Global.Inst.InspStage == null)
+            {
+                MessageBox.Show("InspStage가 null입니다.");
+            }
+            else if (Global.Inst.InspStage.InspWindow == null)
+            {
+                MessageBox.Show("InspWindow가 null입니다.");
+            }
             else
-                MessageBox.Show("티칭 실패");
+            {
+                // 모두 null이 아니라면 PatternLearn 호출 가능
+                if (_inspWindow.PatternLearn())
+                    MessageBox.Show("티칭 성공");
+                else
+                    MessageBox.Show("티칭 실패");
+            }
+        }
+        public void SetProperty()
+        {
+            if (_matchAlgo is null)
+                return;
+
+            OpenCvSharp.Size extendSize = _matchAlgo.ExtSize;
+            int matchScore = _matchAlgo.MatchScore;
+            int matchCount = _matchAlgo.MatchCount;
+
+            txtExtendX.Text = extendSize.Width.ToString();
+            txtExtendY.Text = extendSize.Height.ToString();
+            txtScore.Text = matchScore.ToString();
+            txtMatchCount.Text = matchCount.ToString();
+
+            //Mat teachImage = _matchAlgo.GetTemplateImage();
+            //if (teachImage != null)
+            //{
+            //    Bitmap bmpImage = BitmapConverter.ToBitmap(teachImage);
+            //    picTeachImage.Image = bmpImage;
+            //}
+        }
+        private void OnUpdateValue(object sender, EventArgs e)
+        {
+            if (_matchAlgo == null)
+                return;
+
+            OpenCvSharp.Size extendSize = _matchAlgo.ExtSize;
+
+            if (!int.TryParse(txtExtendX.Text, out extendSize.Width))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            }
+
+            if (!int.TryParse(txtExtendY.Text, out extendSize.Height))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            }
+
+            int score = _matchAlgo.MatchScore;
+            if (!int.TryParse(txtScore.Text, out score))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            };
+
+
+            int matchCount = _matchAlgo.MatchCount;
+            if (!int.TryParse(txtMatchCount.Text, out matchCount))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            }
+
+            _matchAlgo.ExtSize = extendSize;
+            _matchAlgo.MatchScore = score;
+            _matchAlgo.MatchCount = matchCount;
+
+            PropertyChanged?.Invoke(this, null);
         }
     }
 }

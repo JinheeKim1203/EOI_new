@@ -34,6 +34,9 @@ namespace EOI_new.Algorithm
         //검사가 완료되었는지를 판단
         public bool IsInspected { get; set; } = false;
 
+        public Rect TeachRect { get; set; }
+        public Rect InspRect { get; set; }
+
         //검사할 원본 이미지
         protected Mat _srcImage = null;
 

@@ -14,6 +14,7 @@ using static EOI_new.Property.BinaryInspProp;
 using static System.Windows.Forms.MonthCalendar;
 using OpenCvSharp;
 using EOI_new;
+using static EOI_new.Algorithm.BlobFilterCondition;
 
 
 namespace EOI_new.Property
@@ -33,9 +34,10 @@ namespace EOI_new.Property
 
     public partial class BinaryInspProp : UserControl
     {
+        public event EventHandler<EventArgs> PropertyChanged;
         public event EventHandler<RangeChangedEventArgs> RangeChanged;
 
-
+        BlobAlgorithm _blobAlgo = null;
         /* NOTE
         public int LowerValue
         {
@@ -54,6 +56,32 @@ namespace EOI_new.Property
         public BinaryInspProp()
         {
             InitializeComponent();
+        }
+        public void SetAlgorithm(BlobAlgorithm blobAlgo)
+        {
+            _blobAlgo = blobAlgo;
+            SetProperty();
+        }
+        public void SetProperty()
+        {
+            // 안전한 타입 변환
+            var blob = _blobAlgo as BlobAlgorithm;
+            if (blob == null)
+                return;
+
+            // BinThreshold 접근
+            BinaryThreshold threshold = blob.BinThreshold;
+            trackBarLower.Value = threshold.lower;
+            trackBarUpper.Value = threshold.upper;
+            chkInvert.Checked = threshold.invert;
+
+            int filterArea = blob.AreaFilter;
+            txtAreaMin.Text = filterArea.ToString();
+            txtAreaMax.Text = filterArea.ToString();
+            txtWidthMin.Text = filterArea.ToString();
+            txtWidthMax.Text = filterArea.ToString();
+            txtHeightMin.Text = filterArea.ToString();
+            txtHeightMax.Text = filterArea.ToString();
         }
 
         public void LoadInspParam()

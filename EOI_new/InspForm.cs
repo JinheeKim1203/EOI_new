@@ -28,14 +28,17 @@ namespace EOI_new
 
             this.FormClosed += InspForm_FormClosed;
 
-            imageViewer.DiagramEntityEvent += ImageViewer_ModifyROI;
+            imageViewer.DiagramEntityEvent += ImageViewer_DiagramEntityEvent;
             rbtnColor.Checked = true;
         }
 
-        private void ImageViewer_ModifyROI(object sender, DiagramEntityEventArgs e)
+        private void ImageViewer_DiagramEntityEvent(object sender, DiagramEntityEventArgs e)
         {
             switch (e.ActionType)
             {
+                case EntityActionType.Select:
+                    Global.Inst.InspStage.SelectInspWindow(e.InspWindow);
+                    break;
                 case EntityActionType.Add:
                     Global.Inst.InspStage.AddInspWindow(e.WindowType, e.Rect);
                     break;
@@ -258,13 +261,29 @@ namespace EOI_new
             imageViewer.SetDiagramEntityList(diagramEntityList);
         }
 
+        public void SelectDiagramEntity(InspWindow window)
+        {
+            imageViewer.SelectDiagramEntity(window);
+        }
+
+        public void UpdateImageViewer()
+        {
+            imageViewer.Invalidate();
+        }
+
         private void InspForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            imageViewer.DiagramEntityEvent -= ImageViewer_ModifyROI;
+            imageViewer.DiagramEntityEvent -= ImageViewer_DiagramEntityEvent;
 
             this.FormClosed -= InspForm_FormClosed;
         }
 
+        private void btnStop_Click(object sender, EventArgs e)
+        {
 
+        }
     }
+
+
 }
+

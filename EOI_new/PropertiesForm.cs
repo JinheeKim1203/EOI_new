@@ -13,6 +13,8 @@ using EOI_new.Core;
 using static EOI_new.Property.FilterInspProp;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static EOI_new.Property.BinaryInspProp;
+using EOI_new.Algorithm;
+using EOI_new.Teach;
 
 namespace EOI_new
 {
@@ -84,24 +86,19 @@ namespace EOI_new
             {
                 case InspectType.InspBinary:
                     BinaryInspProp blobProp = new BinaryInspProp();
-                    blobProp.LoadInspParam();
                     blobProp.RangeChanged += RangeSlider_RangeChanged;
+                    blobProp.PropertyChanged += PropertyChanged;
                     _inspProp = blobProp;
                     break;
                 case InspectType.InspMatch:
                     MatchInspProp matchProp = new MatchInspProp();
-                    matchProp.LoadInspParam();
+                    matchProp.PropertyChanged += PropertyChanged;
                     _inspProp = matchProp;
                     break;
                 case InspectType.InspFilter:
                     FilterInspProp filterProp = new FilterInspProp();
                     filterProp.FilterSelected += FilterSelect_FilterChanged;
                     _inspProp = filterProp;
-                    break;
-                case InspectType.InspFm:
-                    FmInspProp fmProp = new FmInspProp();
-                    fmProp.LoadInspParam();
-                    _inspProp = fmProp;
                     break;
                 default:
                     MessageBox.Show("유효하지 않은 옵션입니다.");
@@ -159,6 +156,52 @@ namespace EOI_new
         //}
 
         //#BINARY FILTER#16 이진화 속성 변경시 발생하는 이벤트 수정
+
+        public void ShowProperty(InspWindow window)
+        {
+            foreach (InspAlgorithm algo in window.AlgorithmList)
+            {
+                LoadOptionControl(algo.InspectType);
+            }
+
+            tabPropControl.SelectedIndex = 0;
+        }
+
+        public void ResetProperty()
+        {
+            tabPropControl.TabPages.Clear();
+        }
+
+        public void UpdateProperty(InspWindow window)
+        {
+            if (window is null)
+                return;
+
+            foreach (TabPage tabPage in tabPropControl.TabPages)
+            {
+                if (tabPage.Controls.Count > 0)
+                {
+                    UserControl uc = tabPage.Controls[0] as UserControl;
+
+                    if (uc is MatchInspProp matchProp)
+                    {
+                        MatchAlgorithm matchAlgo = (MatchAlgorithm)window.FindInspAlgorithm(InspectType.InspMatch);
+                        if (matchAlgo is null)
+                            continue;
+
+                        matchProp.SetAlgorithm(matchAlgo);
+                    }
+                    else if (uc is BinaryInspProp binaryProp)
+                    {
+                        BlobAlgorithm blobAlgo = (BlobAlgorithm)window.FindInspAlgorithm(InspectType.InspBinary);
+                        if (blobAlgo is null)
+                            continue;
+
+                        binaryProp.SetAlgorithm(blobAlgo);
+                    }
+                }
+            }
+        }
         private void RangeSlider_RangeChanged(object sender, RangeChangedEventArgs e)
         {
             // 속성값을 이용하여 이진화 임계값 설정
@@ -176,6 +219,10 @@ namespace EOI_new
             int filter2 = e.FilterSelected2;
             Global.Inst.InspStage.PreView?.ApplyFilter(filter1, filter2);
 
+        }
+        private void PropertyChanged(object sender, EventArgs e)
+        {
+            Global.Inst.InspStage.RedrawMainView();
         }
     }
 }

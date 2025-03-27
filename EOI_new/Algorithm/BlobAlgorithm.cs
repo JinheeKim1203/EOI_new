@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static EOI_new.Algorithm.BlobFilterCondition;
 
 namespace EOI_new.Algorithm
 {
@@ -41,18 +42,21 @@ namespace EOI_new.Algorithm
             HeightMin = 100;
             HeightMax = 100000;
         }
+        public struct BinaryThreshold
+        {
+            public int lower;
+            public int upper;
+            public bool invert;
+        }
+        
     }
 
     //#BINARY FILTER#1 이진화 필터를 위한 클래스
 
     //이진화 임계값 설정을 구조체로 만들기 (struct로 묶어두면 얘만 가져오면 끝)
 
-    public struct BinaryThreshold
-    {
-        public int lower;
-        public int upper;
-        public bool invert;
-    }
+    
+
     public class BlobAlgorithm : InspAlgorithm
     {
 
@@ -72,7 +76,7 @@ namespace EOI_new.Algorithm
             FilterCondition.Reset(); // 필터 조건 기본값 설정
 
         }
-
+        public BinaryThreshold BinThreshold { get; set; } = new BinaryThreshold();
         //#BINARY FILTER#2 이진화 후, 필터를 이용해 원하는 영역을 얻음(doinspect = 핵심검사) 
         //public bool DoInspect(Mat srcImage)
         //{

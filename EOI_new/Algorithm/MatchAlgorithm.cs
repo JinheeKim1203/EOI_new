@@ -46,6 +46,11 @@ namespace EOI_new.Algorithm
         /// <summary>
         /// 하나의 최적 매칭 위치만 찾기
         /// </summary>
+        public Mat GetTemplateImage()
+        {
+            return _templateImage;
+        }
+
         public bool MatchTemplateSingle(Mat image)
         {
             if (_templateImage is null)
@@ -202,6 +207,19 @@ namespace EOI_new.Algorithm
 
             IsInspected = true;
             return false;
+        }
+        //검사 결과 좌표(OutPoint)와 기준 ROI 위치(InspRect)의 차이(이동량)를 구해서 반환하는 함수
+        public Point GetOffset()
+        {
+            Point offset = new Point(0, 0);
+
+            if (IsInspected)
+            {
+                offset.X = OutPoint.X - InspRect.X;
+                offset.Y = OutPoint.Y - InspRect.Y;
+            }
+
+            return offset;
         }
 
         //#ABSTRACT ALGORITHM#4 매칭 검사로 찾을 Rect 리스트 반환

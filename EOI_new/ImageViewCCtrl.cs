@@ -30,6 +30,7 @@ namespace EOI_new
     {
         None = 0,
         Add = 1,
+        Select,
         Move,
         Resize,
         Delete,
@@ -896,6 +897,18 @@ namespace EOI_new
             _selEntity = null;
             Invalidate();
             return true;
+        }
+        public void SelectDiagramEntity(InspWindow window)
+        {
+            DiagramEntity entity = _diagramEntityList.Find(e => e.LinkedWindow == window);
+            if (entity != null)
+            {
+                _multiSelectedEntities.Clear();
+                AddSelectedROI(entity);
+
+                _selEntity = entity;
+                _roiRect = entity.EntityROI;
+            }
         }
 
         //#GROUP ROI#4 팝업 메뉴 함수 

@@ -33,6 +33,7 @@ namespace EOI_new.Teach
         public string UID { get; set; }
 
         public Rect WindowArea { get; set; }
+        public Rect InspArea { get; set; }
 
         //#ABSTRACT ALGORITHM#9 개별 변수로 있던, MatchAlgorithm과 BlobAlgorithm을
         //InspAlgorithm으로 추상화하여 리스트로 관리하도록 
@@ -155,6 +156,12 @@ namespace EOI_new.Teach
             windowRect.X += offset.X;
             windowRect.Y += offset.Y;
             WindowArea = windowRect;
+            return true;
+        }
+        public bool SetInspOffset(OpenCvSharp.Point offset)
+        {
+            InspArea = WindowArea + offset;
+            AlgorithmList.ForEach(algo => algo.InspRect = algo.TeachRect + offset);
             return true;
         }
 

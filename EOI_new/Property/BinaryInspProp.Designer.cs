@@ -41,6 +41,7 @@
             this.trackBarUpper = new System.Windows.Forms.TrackBar();
             this.trackBarLower = new System.Windows.Forms.TrackBar();
             this.grpFilter = new System.Windows.Forms.GroupBox();
+            this.chkRotatedRect = new System.Windows.Forms.CheckBox();
             this.lblMax = new System.Windows.Forms.Label();
             this.lblMin = new System.Windows.Forms.Label();
             this.txtHeightMax = new System.Windows.Forms.TextBox();
@@ -53,7 +54,6 @@
             this.chkWidth = new System.Windows.Forms.CheckBox();
             this.chkArea = new System.Windows.Forms.CheckBox();
             this.btnFilter = new System.Windows.Forms.Button();
-            this.chkRotatedRect = new System.Windows.Forms.CheckBox();
             this.grpBinary.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarUpper)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLower)).BeginInit();
@@ -68,9 +68,9 @@
             this.grpBinary.Controls.Add(this.trackBarUpper);
             this.grpBinary.Controls.Add(this.trackBarLower);
             this.grpBinary.Location = new System.Drawing.Point(14, 14);
-            this.grpBinary.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpBinary.Margin = new System.Windows.Forms.Padding(4);
             this.grpBinary.Name = "grpBinary";
-            this.grpBinary.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpBinary.Padding = new System.Windows.Forms.Padding(4);
             this.grpBinary.Size = new System.Drawing.Size(434, 255);
             this.grpBinary.TabIndex = 0;
             this.grpBinary.TabStop = false;
@@ -104,7 +104,7 @@
             this.chkHighlight.Checked = true;
             this.chkHighlight.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkHighlight.Location = new System.Drawing.Point(33, 188);
-            this.chkHighlight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkHighlight.Margin = new System.Windows.Forms.Padding(4);
             this.chkHighlight.Name = "chkHighlight";
             this.chkHighlight.Size = new System.Drawing.Size(99, 22);
             this.chkHighlight.TabIndex = 3;
@@ -115,7 +115,7 @@
             // trackBarUpper
             // 
             this.trackBarUpper.Location = new System.Drawing.Point(33, 111);
-            this.trackBarUpper.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarUpper.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarUpper.Maximum = 255;
             this.trackBarUpper.Name = "trackBarUpper";
             this.trackBarUpper.Size = new System.Drawing.Size(313, 69);
@@ -125,7 +125,7 @@
             // trackBarLower
             // 
             this.trackBarLower.Location = new System.Drawing.Point(33, 34);
-            this.trackBarLower.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarLower.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarLower.Maximum = 255;
             this.trackBarLower.Name = "trackBarLower";
             this.trackBarLower.Size = new System.Drawing.Size(313, 69);
@@ -153,6 +153,16 @@
             this.grpFilter.TabStop = false;
             this.grpFilter.Text = "Filter";
             // 
+            // chkRotatedRect
+            // 
+            this.chkRotatedRect.AutoSize = true;
+            this.chkRotatedRect.Location = new System.Drawing.Point(13, 230);
+            this.chkRotatedRect.Name = "chkRotatedRect";
+            this.chkRotatedRect.Size = new System.Drawing.Size(132, 22);
+            this.chkRotatedRect.TabIndex = 8;
+            this.chkRotatedRect.Text = "RotatedRect";
+            this.chkRotatedRect.UseVisualStyleBackColor = true;
+            // 
             // lblMax
             // 
             this.lblMax.AutoSize = true;
@@ -174,7 +184,7 @@
             // txtHeightMax
             // 
             this.txtHeightMax.Location = new System.Drawing.Point(284, 172);
-            this.txtHeightMax.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtHeightMax.Margin = new System.Windows.Forms.Padding(4);
             this.txtHeightMax.Name = "txtHeightMax";
             this.txtHeightMax.Size = new System.Drawing.Size(141, 28);
             this.txtHeightMax.TabIndex = 11;
@@ -182,7 +192,7 @@
             // txtHeightMin
             // 
             this.txtHeightMin.Location = new System.Drawing.Point(106, 172);
-            this.txtHeightMin.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtHeightMin.Margin = new System.Windows.Forms.Padding(4);
             this.txtHeightMin.Name = "txtHeightMin";
             this.txtHeightMin.Size = new System.Drawing.Size(141, 28);
             this.txtHeightMin.TabIndex = 10;
@@ -190,7 +200,7 @@
             // txtWidthMax
             // 
             this.txtWidthMax.Location = new System.Drawing.Point(284, 118);
-            this.txtWidthMax.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtWidthMax.Margin = new System.Windows.Forms.Padding(4);
             this.txtWidthMax.Name = "txtWidthMax";
             this.txtWidthMax.Size = new System.Drawing.Size(141, 28);
             this.txtWidthMax.TabIndex = 9;
@@ -198,7 +208,7 @@
             // txtWidthMin
             // 
             this.txtWidthMin.Location = new System.Drawing.Point(106, 118);
-            this.txtWidthMin.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtWidthMin.Margin = new System.Windows.Forms.Padding(4);
             this.txtWidthMin.Name = "txtWidthMin";
             this.txtWidthMin.Size = new System.Drawing.Size(141, 28);
             this.txtWidthMin.TabIndex = 8;
@@ -206,7 +216,7 @@
             // txtAreaMax
             // 
             this.txtAreaMax.Location = new System.Drawing.Point(284, 64);
-            this.txtAreaMax.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtAreaMax.Margin = new System.Windows.Forms.Padding(4);
             this.txtAreaMax.Name = "txtAreaMax";
             this.txtAreaMax.Size = new System.Drawing.Size(141, 28);
             this.txtAreaMax.TabIndex = 7;
@@ -214,7 +224,7 @@
             // txtAreaMin
             // 
             this.txtAreaMin.Location = new System.Drawing.Point(106, 66);
-            this.txtAreaMin.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtAreaMin.Margin = new System.Windows.Forms.Padding(4);
             this.txtAreaMin.Name = "txtAreaMin";
             this.txtAreaMin.Size = new System.Drawing.Size(141, 28);
             this.txtAreaMin.TabIndex = 6;
@@ -223,7 +233,7 @@
             // 
             this.chkHeight.AutoSize = true;
             this.chkHeight.Location = new System.Drawing.Point(13, 180);
-            this.chkHeight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkHeight.Margin = new System.Windows.Forms.Padding(4);
             this.chkHeight.Name = "chkHeight";
             this.chkHeight.Size = new System.Drawing.Size(83, 22);
             this.chkHeight.TabIndex = 5;
@@ -235,7 +245,7 @@
             // 
             this.chkWidth.AutoSize = true;
             this.chkWidth.Location = new System.Drawing.Point(13, 128);
-            this.chkWidth.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkWidth.Margin = new System.Windows.Forms.Padding(4);
             this.chkWidth.Name = "chkWidth";
             this.chkWidth.Size = new System.Drawing.Size(77, 22);
             this.chkWidth.TabIndex = 4;
@@ -247,7 +257,7 @@
             // 
             this.chkArea.AutoSize = true;
             this.chkArea.Location = new System.Drawing.Point(13, 69);
-            this.chkArea.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkArea.Margin = new System.Windows.Forms.Padding(4);
             this.chkArea.Name = "chkArea";
             this.chkArea.Size = new System.Drawing.Size(72, 22);
             this.chkArea.TabIndex = 3;
@@ -265,23 +275,13 @@
             this.btnFilter.UseVisualStyleBackColor = true;
             this.btnFilter.Click += new System.EventHandler(this.btnFilter_Click_1);
             // 
-            // chkRotatedRect
-            // 
-            this.chkRotatedRect.AutoSize = true;
-            this.chkRotatedRect.Location = new System.Drawing.Point(13, 230);
-            this.chkRotatedRect.Name = "chkRotatedRect";
-            this.chkRotatedRect.Size = new System.Drawing.Size(132, 22);
-            this.chkRotatedRect.TabIndex = 8;
-            this.chkRotatedRect.Text = "RotatedRect";
-            this.chkRotatedRect.UseVisualStyleBackColor = true;
-            // 
             // BinaryInspProp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.grpFilter);
             this.Controls.Add(this.grpBinary);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "BinaryInspProp";
             this.Size = new System.Drawing.Size(466, 606);
             this.grpBinary.ResumeLayout(false);

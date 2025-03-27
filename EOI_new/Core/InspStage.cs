@@ -1,4 +1,5 @@
-﻿using EOI_new.Grab;
+﻿using EOI_new.Algorithm;
+using EOI_new.Grab;
 using EOI_new.Inspect;
 using EOI_new.Setting;
 using EOI_new.Teach;
@@ -307,16 +308,43 @@ namespace EOI_new.Core
         {
             SLogger.Write("검사 속성창 초기화!");
 
-            _inspWindow = new InspWindow();
+            //_inspWindow = new InspWindow();
+            //var propForm = MainForm.GetDockForm<PropertiesForm>();
+            //if (propForm != null)
+            //{
+            //    //#ABSTRACT ALGORITHM#8 InspAlgorithm을 추상화하였으므로, 
+            //    //모든 검사 타입을 for문을 통해서 추가,
+            //    //함수명 변경 SetInspType -> AddInspType
+            //    for (int i = 0; i < (int)InspectType.InspCount; i++)
+            //        propForm.AddInspType((InspectType)i);
+            //}
+        }
+
+        public void TryInspection(InspWindow inspWindow)
+        {
+            if (inspWindow is null)
+                return;
+
+            InspWorker.TryInspect(inspWindow, InspectType.InspNone);
+        }
+
+        public void SelectInspWindow(InspWindow inspWindow)
+        {
             var propForm = MainForm.GetDockForm<PropertiesForm>();
             if (propForm != null)
             {
-                //#ABSTRACT ALGORITHM#8 InspAlgorithm을 추상화하였으므로, 
-                //모든 검사 타입을 for문을 통해서 추가,
-                //함수명 변경 SetInspType -> AddInspType
-                for (int i = 0; i < (int)InspectType.InspCount; i++)
-                    propForm.AddInspType((InspectType)i);
+                if (inspWindow is null)
+                {
+                    propForm.ResetProperty();
+                    return;
+                }
+
+                propForm.ShowProperty(inspWindow);
             }
+
+            UpdateProperty(inspWindow);
+
+            Global.Inst.InspStage.PreView.SetInspWindow(inspWindow);
         }
 
         //#MODEL#9 ImageViwer에서 ROI를 추가하여, InspWindow생성하는 함수
@@ -327,7 +355,15 @@ namespace EOI_new.Core
                 return;
 
             inspWindow.WindowArea = rect;
+            UpdateProperty(inspWindow);
             UpdateDiagramEntity();
+
+            InspForm inspForm = MainForm.GetDockForm<InspForm>();
+            if (inspForm != null)
+            {
+                inspForm.SelectDiagramEntity(inspWindow);
+                SelectInspWindow(inspWindow);
+            }
         }
 
         //입력된 윈도우 이동
@@ -402,6 +438,32 @@ namespace EOI_new.Core
             _model.BreakGroupWindow(group);
             UpdateDiagramEntity();
         }
+        private void UpdateProperty(InspWindow inspWindow)
+        {
+            if (inspWindow is null)
+                return;
+
+            InspForm cameraForm = MainForm.GetDockForm<InspForm>();
+            if (cameraForm is null)
+                return;
+
+            MatchAlgorithm matchAlgo = (MatchAlgorithm)inspWindow.FindInspAlgorithm(InspectType.InspMatch);
+            if (matchAlgo != null)
+            {
+                Mat curImage = cameraForm.GetDisplayImage();
+                if (curImage is null)
+                    return;
+
+                Mat teachingImage = curImage[inspWindow.WindowArea];
+                matchAlgo.SetTemplateImage(teachingImage);
+            }
+
+            PropertiesForm propertiesForm = MainForm.GetDockForm<PropertiesForm>();
+            if (propertiesForm is null)
+                return;
+
+            propertiesForm.UpdateProperty(inspWindow);
+        }
 
         //#MODEL#15 변경된 모델 정보 갱신하여, ImageViewer와 모델트리에 반영
         public void UpdateDiagramEntity()
@@ -418,6 +480,14 @@ namespace EOI_new.Core
                 modelTreeForm.UpdateDiagramEntity();
             }
 
+        }
+        public void RedrawMainView()
+        {
+            InspForm cameraForm = MainForm.GetDockForm<InspForm>();
+            if (cameraForm != null)
+            {
+                cameraForm.UpdateImageViewer();
+            }
         }
 
         //#MODEL SAVE#3 Mainform에서 호출되는 모델 열기와 저장 함수

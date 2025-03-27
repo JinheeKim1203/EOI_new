@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EOI_new.Property;
+using EOI_new.Teach;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 
@@ -56,6 +57,7 @@ namespace EOI_new.Core
     {
         private Mat _orinalImage = null;
         private Mat _previewImage = null;
+        private InspWindow _inspWindow = null;
         //private Mat _tempImage = null;
 
         public void SetImage(Mat image)
@@ -64,6 +66,10 @@ namespace EOI_new.Core
             _previewImage = new Mat();
             //_previewImage = null;
             //_tempImage = new Mat(image.Size(), MatType.CV_8UC1,new Scalar(0));
+        }
+        public void SetInspWindow(InspWindow inspwindow)
+        {
+            _inspWindow = inspwindow;
         }
 
         //#BINARY FILTER#15 기존 이진화 프리뷰에, 배경없이 이진화 이미지만 보이는 모드 추가
