@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using log4net;
 
 namespace EOI_new
 {
@@ -35,6 +36,7 @@ namespace EOI_new
         Delete,
         DeleteList,
         AddGroup,
+        Select,
         Break
     }
 
@@ -630,6 +632,9 @@ namespace EOI_new
 
                     _isSelectingRoi = false;
 
+                    if (_bitmapImage is null)
+                        return;
+
                     //모델에 InspWindow 추가하는 이벤트 발생
                     DiagramEntityEvent?.Invoke(this, new DiagramEntityEventArgs(EntityActionType.Add, null, _newRoiType, _roiRect, new Point()));
                 }
@@ -640,6 +645,46 @@ namespace EOI_new
 
                     //모델에 InspWindow 크기 변경 이벤트 발생
                     DiagramEntityEvent?.Invoke(this, new DiagramEntityEventArgs(EntityActionType.Resize, _selEntity.LinkedWindow, _newRoiType, _roiRect, new Point()));
+                }
+                else if (_isMovingRoi)
+                {
+                    _isMovingRoi = false;
+
+                    if (_selEntity != null)
+                    {
+                        InspWindow linkedWindow = _selEntity.LinkedWindow;
+
+                        Point offsetMove = new Point(0, 0);
+                        if (linkedWindow != null)
+                        {
+                            offsetMove.X = _selEntity.EntityROI.X - linkedWindow.WindowArea.X;
+                            offsetMove.Y = _selEntity.EntityROI.Y - linkedWindow.WindowArea.Y;
+                        }
+
+                        // 항상 Align 적용 - 선택된 다른 ROI들도 함께 이동
+                        if (_selEntity != null && _multiSelectedEntities.Count > 1)
+                        {
+                            foreach (var entity in _multiSelectedEntities)
+                            {
+                                if (entity != _selEntity)
+                                {
+                                    Rectangle newRect = entity.EntityROI;
+                                    newRect.X += offsetMove.X;
+                                    newRect.Y += offsetMove.Y;
+                                    entity.EntityROI = newRect;
+
+                                    // 각각의 ROI 이동 이벤트 전송
+                                    DiagramEntityEvent?.Invoke(this, new DiagramEntityEventArgs(EntityActionType.Move, entity.LinkedWindow, _newRoiType, newRect, offsetMove));
+                                }
+                            }
+                        }
+
+                        // 기준 ROI만 이동하거나, Align 외 모드일 경우
+                        if (offsetMove.X != 0 || offsetMove.Y != 0)
+                            DiagramEntityEvent?.Invoke(this, new DiagramEntityEventArgs(EntityActionType.Move, linkedWindow, _newRoiType, _roiRect, offsetMove));
+                        else
+                            DiagramEntityEvent?.Invoke(this, new DiagramEntityEventArgs(EntityActionType.Select, _selEntity.LinkedWindow));
+                    }
                 }
                 else if (_isMovingRoi)
                 {
@@ -681,6 +726,9 @@ namespace EOI_new
                         _selEntity = _multiSelectedEntities[0];
 
                     _selectionBox = Rectangle.Empty;
+
+                    DiagramEntityEvent?.Invoke(this, new DiagramEntityEventArgs(EntityActionType.Select, null));
+
                     Invalidate();
                     return;
                 }

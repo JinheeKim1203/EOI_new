@@ -51,21 +51,34 @@ namespace EOI_new.Algorithm
             if (_templateImage is null)
                 return false;
 
+            // 원본 이미지와 템플릿 이미지의 타입이 다르면 둘 다 Grayscale + 8비트로 맞춤
+            if (image.Type() != _templateImage.Type())
+            {
+                if (image.Channels() > 1)
+                    Cv2.CvtColor(image, image, ColorConversionCodes.BGR2GRAY);
+
+                if (_templateImage.Channels() > 1)
+                    Cv2.CvtColor(_templateImage, _templateImage, ColorConversionCodes.BGR2GRAY);
+
+                // Grayscale로 변환한 후, 비트 깊이도 8비트로 맞춤
+                if (image.Type() != MatType.CV_8UC1)
+                    image.ConvertTo(image, MatType.CV_8UC1);
+
+                if (_templateImage.Type() != MatType.CV_8UC1)
+                    _templateImage.ConvertTo(_templateImage, MatType.CV_8UC1);
+            }
+
+            // 결과 저장용 Mat
             Mat result = new Mat();
 
             // 템플릿 매칭 수행
             Cv2.MatchTemplate(image, _templateImage, result, TemplateMatchModes.CCoeffNormed);
 
-            // 가장 높은 점수 위치 찾기
-            Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out Point maxLoc);
+            // 매칭 결과 분석
+            Cv2.MinMaxLoc(result, out double minVal, out double maxVal, out _, out _);
 
-            OutScore = (int)(maxVal * 100);
-
-            Console.WriteLine($"최적 매칭 위치: {maxLoc}, 신뢰도: {maxVal:F2}");
-
-            OutPoint = new Point(maxLoc.X + _templateImage.Width, maxLoc.Y + _templateImage.Height);
-
-            return true;
+            // 유사도 기준 임계값을 설정해 true/false 반환
+            return maxVal >= 0.8;
         }
 
         /// <summary>

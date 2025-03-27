@@ -13,6 +13,8 @@ using EOI_new.Core;
 using static EOI_new.Property.FilterInspProp;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using static EOI_new.Property.BinaryInspProp;
+using EOI_new.Algorithm;
+using EOI_new.Teach;
 
 namespace EOI_new
 {
@@ -108,6 +110,51 @@ namespace EOI_new
                     return null;
             }
             return _inspProp;
+        }
+        public void ShowProperty(InspWindow window)
+        {
+            foreach (InspAlgorithm algo in window.AlgorithmList)
+            {
+                LoadOptionControl(algo.InspectType);
+            }
+
+            tabPropControl.SelectedIndex = 0;
+        }
+
+        public void ResetProperty()
+        {
+            tabPropControl.TabPages.Clear();
+        }
+
+        public void UpdateProperty(InspWindow window)
+        {
+            if (window is null)
+                return;
+
+            foreach (TabPage tabPage in tabPropControl.TabPages)
+            {
+                if (tabPage.Controls.Count > 0)
+                {
+                    UserControl uc = tabPage.Controls[0] as UserControl;
+
+                    if (uc is MatchInspProp matchProp)
+                    {
+                        MatchAlgorithm matchAlgo = (MatchAlgorithm)window.FindInspAlgorithm(InspectType.InspMatch);
+                        if (matchAlgo is null)
+                            continue;
+
+                        matchProp.SetAlgorithm(matchAlgo);
+                    }
+                    else if (uc is BinaryInspProp binaryProp)
+                    {
+                        BlobAlgorithm blobAlgo = (BlobAlgorithm)window.FindInspAlgorithm(InspectType.InspBinary);
+                        if (blobAlgo is null)
+                            continue;
+
+                        binaryProp.SetAlgorithm(blobAlgo);
+                    }
+                }
+            }
         }
 
         public void AddInspType(InspectType inspPropType)

@@ -1,4 +1,5 @@
-﻿using EOI_new.Grab;
+﻿using EOI_new.Algorithm;
+using EOI_new.Grab;
 using EOI_new.Inspect;
 using EOI_new.Setting;
 using EOI_new.Teach;
@@ -342,7 +343,10 @@ namespace EOI_new.Core
             if (group != null)
                 group.OffsetMove(offset);
             else
+            {
                 inspWindow.OffsetMove(offset);
+                UpdateProperty(inspWindow);
+            }
         }
 
         //#MODEL#10 기존 ROI 수정되었을때, 그 정보를 InspWindow에 반영
@@ -402,6 +406,32 @@ namespace EOI_new.Core
 
             _model.BreakGroupWindow(group);
             UpdateDiagramEntity();
+        }
+        private void UpdateProperty(InspWindow inspWindow)
+        {
+            if (inspWindow is null)
+                return;
+
+            InspForm cameraForm = MainForm.GetDockForm<InspForm>();
+            if (cameraForm is null)
+                return;
+
+            MatchAlgorithm matchAlgo = (MatchAlgorithm)inspWindow.FindInspAlgorithm(InspectType.InspMatch);
+            if (matchAlgo != null)
+            {
+                Mat curImage = cameraForm.GetDisplayImage();
+                if (curImage is null)
+                    return;
+
+                Mat teachingImage = curImage[inspWindow.WindowArea];
+                matchAlgo.SetTemplateImage(teachingImage);
+            }
+
+            PropertiesForm propertiesForm = MainForm.GetDockForm<PropertiesForm>();
+            if (propertiesForm is null)
+                return;
+
+            propertiesForm.UpdateProperty(inspWindow);
         }
 
         //#MODEL#15 변경된 모델 정보 갱신하여, ImageViewer와 모델트리에 반영

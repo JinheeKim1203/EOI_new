@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
 using EOI_new.Algorithm;
+using OpenCvSharp.Extensions;
 
 namespace EOI_new.Property
 {
@@ -24,12 +25,15 @@ namespace EOI_new.Property
 
     public partial class MatchInspProp : UserControl
     {
+        MatchAlgorithm _matchAlgo = null;
         public MatchInspProp()
         {
             InitializeComponent();
 
-            //#MATCH PROP#8 템플릿 매칭 속성값을 GUI에 설정
-            LoadInspParam();
+            txtExtendX.Leave += OnUpdateValue;
+            txtExtendY.Leave += OnUpdateValue;
+            txtScore.Leave += OnUpdateValue;
+            txtMatchCount.Leave += OnUpdateValue;
         }
 
         //#MATCH PROP#7 템플릿 매칭 속성값을 GUI에 설정
@@ -89,6 +93,72 @@ namespace EOI_new.Property
                 MessageBox.Show("티칭 성공");
             else
                 MessageBox.Show("티칭 실패");
+        }
+        public void SetAlgorithm(MatchAlgorithm matchAlgo)
+        {
+            _matchAlgo = matchAlgo;
+            SetProperty();
+        }
+        public void SetProperty()
+        {
+            if (_matchAlgo is null)
+                return;
+
+            OpenCvSharp.Size extendSize = _matchAlgo.ExtSize;
+            int matchScore = _matchAlgo.MatchScore;
+            int matchCount = _matchAlgo.MatchCount;
+
+            txtExtendX.Text = extendSize.Width.ToString();
+            txtExtendY.Text = extendSize.Height.ToString();
+            txtScore.Text = matchScore.ToString();
+            txtMatchCount.Text = matchCount.ToString();
+
+            Mat teachImage = _matchAlgo.GetTemplateImage();
+            if (teachImage != null)
+            {
+                Bitmap bmpImage = BitmapConverter.ToBitmap(teachImage);
+                picTeachImage.Image = bmpImage;
+            }
+        }
+        private void OnUpdateValue(object sender, EventArgs e)
+        {
+            if (_matchAlgo == null)
+                return;
+
+            OpenCvSharp.Size extendSize = _matchAlgo.ExtSize;
+
+            if (!int.TryParse(txtExtendX.Text, out extendSize.Width))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            }
+
+            if (!int.TryParse(txtExtendY.Text, out extendSize.Height))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            }
+
+            int score = _matchAlgo.MatchScore;
+            if (!int.TryParse(txtScore.Text, out score))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            };
+
+
+            int matchCount = _matchAlgo.MatchCount;
+            if (!int.TryParse(txtMatchCount.Text, out matchCount))
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                return;
+            }
+
+            _matchAlgo.ExtSize = extendSize;
+            _matchAlgo.MatchScore = score;
+            _matchAlgo.MatchCount = matchCount;
+
+            PropertyChanged?.Invoke(this, null);
         }
     }
 }
