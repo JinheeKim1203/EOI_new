@@ -38,18 +38,16 @@ namespace EOI_new
 
             // 컨텍스트 메뉴 초기화
             _contextMenu = new ContextMenuStrip();
-            ToolStripMenuItem addBaseRoiItem = new ToolStripMenuItem("Base", null, AddNode_Click) { Tag = "Base" };
-            ToolStripMenuItem addSubRoiItem = new ToolStripMenuItem("Sub", null, AddNode_Click) { Tag = "Sub" };
             ToolStripMenuItem addIdRoiItem = new ToolStripMenuItem("ID", null, AddNode_Click) { Tag = "ID" };
-            ToolStripMenuItem addHeadRoiItem = new ToolStripMenuItem("Head", null, AddNode_Click) { Tag = "Head" };
-            ToolStripMenuItem addBodyRoiItem = new ToolStripMenuItem("Body", null, AddNode_Click) { Tag = "Body" };
+            ToolStripMenuItem addPinRoiItem = new ToolStripMenuItem("Pin Header", null, AddNode_Click) { Tag = "Pin Header" };
+            ToolStripMenuItem addChipRoiItem = new ToolStripMenuItem("IC Chip", null, AddNode_Click) { Tag = "IC Chip" };
+            ToolStripMenuItem addLeadRoiItem = new ToolStripMenuItem("Lead", null, AddNode_Click) { Tag = "Lead" };
 
 
-            _contextMenu.Items.Add(addBaseRoiItem);
-            _contextMenu.Items.Add(addSubRoiItem);
             _contextMenu.Items.Add(addIdRoiItem);
-            _contextMenu.Items.Add(addHeadRoiItem);
-            _contextMenu.Items.Add(addBodyRoiItem);
+            _contextMenu.Items.Add(addPinRoiItem);
+            _contextMenu.Items.Add(addChipRoiItem);
+            _contextMenu.Items.Add(addLeadRoiItem);
 
         }
 
@@ -75,25 +73,21 @@ namespace EOI_new
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
                 string nodeType = menuItem.Tag?.ToString();
-                if (nodeType == "Base")
-                {
-                    AddNewROI(InspWindowType.Base);
-                }
-                else if (nodeType == "Sub")
-                {
-                    AddNewROI(InspWindowType.Sub);
-                }
-                else if (nodeType == "ID")
+                if (nodeType == "ID")
                 {
                     AddNewROI(InspWindowType.ID);
                 }
-                else if (nodeType == "Head")
+                else if (nodeType == "Pin Header")
                 {
-                    AddNewROI(InspWindowType.Head);
+                    AddNewROI(InspWindowType.PinHeader);
                 }
-                else if (nodeType == "Body")
+                else if (nodeType == "IC chip")
                 {
-                    AddNewROI(InspWindowType.Body);
+                    AddNewROI(InspWindowType.ICChip);
+                }
+                else if (nodeType == "Lead")
+                {
+                    AddNewROI(InspWindowType.Lead);
                 }
             }
         }
