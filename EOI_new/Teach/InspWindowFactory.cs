@@ -71,25 +71,21 @@ namespace EOI_new.Teach
                     name = "GLOBAL";
                     prefix = "GLB";
                     break;
-                case InspWindowType.Base:
-                    name = "BASE";
-                    prefix = "BAS";
+                case InspWindowType.Pin:
+                    name = "PIN";
+                    prefix = "PIN";
                     break;
-                case InspWindowType.Sub:
-                    name = "SUB";
-                    prefix = "SUB";
+                case InspWindowType.Chip:
+                    name = "CHIP";
+                    prefix = "CHIP";
                     break;
                 case InspWindowType.ID:
                     name = "ID";
                     prefix = "ID";
                     break;
-                case InspWindowType.Head:
-                    name = "HEAD";
-                    prefix = "HD";
-                    break;
-                case InspWindowType.Body:
-                    name = "BODY";
-                    prefix = "BD";
+                case InspWindowType.Lead:
+                    name = "LEAD";
+                    prefix = "LEAD";
                     break;
                 default:
                     return false;

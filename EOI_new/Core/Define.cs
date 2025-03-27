@@ -13,11 +13,10 @@ namespace EOI_new.Core
     {
         None = 0,
         Global,
-        Base,
-        Sub,
         ID,
-        Head,
-        Body,
+        Pin,
+        Chip,
+        Lead,
         Group
     }
 

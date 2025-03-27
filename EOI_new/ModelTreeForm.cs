@@ -38,18 +38,16 @@ namespace EOI_new
 
             // 컨텍스트 메뉴 초기화
             _contextMenu = new ContextMenuStrip();
-            ToolStripMenuItem addBaseRoiItem = new ToolStripMenuItem("Base", null, AddNode_Click) { Tag = "Base" };
-            ToolStripMenuItem addSubRoiItem = new ToolStripMenuItem("Sub", null, AddNode_Click) { Tag = "Sub" };
+            ToolStripMenuItem addPinRoiItem = new ToolStripMenuItem("Pin", null, AddNode_Click) { Tag = "Pin" };
+            ToolStripMenuItem addChipRoiItem = new ToolStripMenuItem("Chip", null, AddNode_Click) { Tag = "Chip" };
             ToolStripMenuItem addIdRoiItem = new ToolStripMenuItem("ID", null, AddNode_Click) { Tag = "ID" };
-            ToolStripMenuItem addHeadRoiItem = new ToolStripMenuItem("Head", null, AddNode_Click) { Tag = "Head" };
-            ToolStripMenuItem addBodyRoiItem = new ToolStripMenuItem("Body", null, AddNode_Click) { Tag = "Body" };
+            ToolStripMenuItem addLeadRoiItem = new ToolStripMenuItem("Lead", null, AddNode_Click) { Tag = "Lead" };
 
 
-            _contextMenu.Items.Add(addBaseRoiItem);
-            _contextMenu.Items.Add(addSubRoiItem);
+            _contextMenu.Items.Add(addPinRoiItem);
+            _contextMenu.Items.Add(addChipRoiItem);
             _contextMenu.Items.Add(addIdRoiItem);
-            _contextMenu.Items.Add(addHeadRoiItem);
-            _contextMenu.Items.Add(addBodyRoiItem);
+            _contextMenu.Items.Add(addLeadRoiItem);
 
         }
 
@@ -59,7 +57,7 @@ namespace EOI_new
             if (e.Button == MouseButtons.Right)
             {
                 TreeNode clickedNode = tvModelTree.GetNodeAt(e.X, e.Y);
-                if (clickedNode != null && clickedNode.Text == "Root");
+                if (clickedNode != null && clickedNode.Text == "Root")
                 {
                     tvModelTree.SelectedNode = clickedNode;
                     _contextMenu.Show(tvModelTree, e.Location);
@@ -75,25 +73,21 @@ namespace EOI_new
             {
                 ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
                 string nodeType = menuItem.Tag?.ToString();
-                if (nodeType == "Base")
+                if (nodeType == "Pin")
                 {
-                    AddNewROI(InspWindowType.Base);
+                    AddNewROI(InspWindowType.Pin);
                 }
-                else if (nodeType == "Sub")
+                else if (nodeType == "Chip")
                 {
-                    AddNewROI(InspWindowType.Sub);
+                    AddNewROI(InspWindowType.Chip);
                 }
                 else if (nodeType == "ID")
                 {
                     AddNewROI(InspWindowType.ID);
                 }
-                else if (nodeType == "Head")
+                else if (nodeType == "Lead")
                 {
-                    AddNewROI(InspWindowType.Head);
-                }
-                else if (nodeType == "Body")
-                {
-                    AddNewROI(InspWindowType.Body);
+                    AddNewROI(InspWindowType.Lead);
                 }
             }
         }

@@ -150,14 +150,14 @@ namespace EOI_new
             };
 
             // 하위 ROI - NG 발생
-            var child1 = new InspResult(new InspWindow(), "Body-1", "ROI-001-1", InspWindowType.Sub)
+            var child1 = new InspResult(new InspWindow(), "Body-1", "ROI-001-1", InspWindowType.Chip)
             {
                 IsDefect = true,
                 ResultScore = 70.2f,
                 ResultInfo = "이물 감지됨 (크기: 1.5mm)"
             };
 
-            var child2 = new InspResult(new InspWindow(), "Body-1", "ROI-001-2", InspWindowType.Sub)
+            var child2 = new InspResult(new InspWindow(), "Body-1", "ROI-001-2", InspWindowType.Chip)
             {
                 IsDefect = false,
                 ResultScore = 89.3f,
