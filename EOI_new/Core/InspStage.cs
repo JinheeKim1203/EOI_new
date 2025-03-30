@@ -37,6 +37,12 @@ namespace EOI_new.Core
         //#MODEL#6 모델 변수 선언
         private Model _model = null;
 
+        // 클래스 내부에 누적용 리스트 추가
+        private List<Rect> allRects = new List<Rect>();
+
+        private List<Rect> _currentRects = new List<Rect>();
+
+
         public ImageSpace ImageSpace
         {
             get => _imageSpace;
@@ -272,10 +278,24 @@ namespace EOI_new.Core
             var cameraForm = MainForm.GetDockForm<InspForm>();
             if (cameraForm != null)
             {
-                Mat displayImage = cameraForm.GetDisplayImage();
-                Cv2.ImWrite(filePath, displayImage);
+                //Mat displayImage = cameraForm.GetDisplayImage();
+                //Cv2.ImWrite(filePath, displayImage);
+                cameraForm.AddRect(rects);
             }
         }
+        // rects를 업데이트하는 함수에서 저장
+        public void SomeFunction(List<Rect> rects)
+        {
+            _currentRects = rects;
+
+            var cameraForm = MainForm.GetDockForm<InspForm>();
+            if (cameraForm != null)
+            {
+                cameraForm.AddRect(_currentRects);
+            }
+        }
+
+
 
         public Bitmap GetBitmap(int bufferIndex = -1, eImageChannel imageChannel = eImageChannel.None)
         {
@@ -438,6 +458,19 @@ namespace EOI_new.Core
                 Global.Inst.InspStage.CurModel.Save();
             else
                 Global.Inst.InspStage.CurModel.SaveAs(filePath);
+        }
+        public void AddRect(List<Rect> rects)
+        {
+            // 새로 전달된 rect들을 누적 리스트에 추가
+            allRects.AddRange(rects);
+
+            // Rectangle로 변환
+            var rectangles = allRects
+                .Select(r => new Rectangle(r.X, r.Y, r.Width, r.Height))
+                .ToList();
+
+            // 전체 누적된 ROI를 화면에 그림
+            InspForm.AddRect(rects);
         }
     }
 }
