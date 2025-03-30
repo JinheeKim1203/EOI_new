@@ -10,6 +10,7 @@ using System.Security.Policy;
 using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
+using EOI_new.Inspect;
 
 
 namespace EOI_new.Teach
@@ -34,6 +35,12 @@ namespace EOI_new.Teach
 
         public Rect WindowArea { get; set; }
 
+        public Rectangle ExpandRect { get; set; }
+
+        
+
+        public Rect InspArea { get; set; }
+
         //#ABSTRACT ALGORITHM#9 개별 변수로 있던, MatchAlgorithm과 BlobAlgorithm을
         //InspAlgorithm으로 추상화하여 리스트로 관리하도록 
 
@@ -41,6 +48,8 @@ namespace EOI_new.Teach
         [XmlElement("InspAlgorithm")]
 
         public List<InspAlgorithm> AlgorithmList { get; set; } = new List<InspAlgorithm>();
+
+        public List<InspResult> InspResultList { get; set; } = new List<InspResult>();
 
         //부모-자식 관계를 위한 변수 추가
         public InspWindow Parent { get; set; }
@@ -157,7 +166,12 @@ namespace EOI_new.Teach
             WindowArea = windowRect;
             return true;
         }
-
+        public bool SetInspOffset(OpenCvSharp.Point offset)
+        {
+            InspArea = WindowArea + offset;
+            AlgorithmList.ForEach(algo => algo.InspRect = algo.TeachRect + offset);
+            return true;
+        }
         #region 부모 - 자식 관계 관리 메서드 추가
 
         public void AddChild(InspWindow child)
@@ -192,6 +206,14 @@ namespace EOI_new.Teach
 
 
         #endregion
+        public void ResetInspResult()
+        {
+            InspResultList.Clear();
+        }
+        public void AddInspResult(InspResult inspResult)
+        {
+            InspResultList.Add(inspResult);
+        }
 
     }
 }

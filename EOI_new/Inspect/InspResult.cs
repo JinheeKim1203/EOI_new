@@ -20,6 +20,8 @@ namespace EOI_new.Inspect
         public string ObjectID { get; set; }
         //검사한 ROI의 타입
         public InspWindowType ObjectType { get; set; }
+        //검사한 알고리즘 타입
+        public InspectType InspType { get; set; }
         //검사 결과 코드
         public int ErrorCode { get; set; }
         //결과가 불량인지 여부
@@ -30,6 +32,8 @@ namespace EOI_new.Inspect
         public float ResultValue { get; set; }
         //세부적인 검사 결과
         public string ResultInfo { get; set; }
+
+        public string ResultInfos { get; set; }
 
         //검사 결과로 찾은 불량 위치
         public List<Rect> ResultRectList { get; set; } = null;

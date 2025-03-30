@@ -201,7 +201,7 @@ namespace EOI_new
             //아래 코드를 이용해, Rect -> Rectangle로 변환하는 람다식
             var rectangles = rects.Select(r => new Rectangle(r.X, r.Y, r.Width, r.Height)).ToList();
             imageViewer.AddRect(rectangles);
-            
+
         }
 
         //#INSP WORKER#8 CaearaForm에 검사 버튼을 추가하고, 전체 검사 함수 추가

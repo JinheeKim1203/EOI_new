@@ -37,6 +37,14 @@ namespace EOI_new.Algorithm
         //검사할 원본 이미지
         protected Mat _srcImage = null;
 
+        public Rect TeachRect { get; set; }
+
+        public Rect InspRect { get; set; }
+
+        public bool IsDefect { get; set; }
+
+        public List<string> ResultString { get; set; }
+
         //검사에 필요한 정보를 설정, 각 알고리즘이 함수를 상속받아서, 필요한 정보를 추가로 입력받는다.
         public virtual void SetInspData(Mat srcImage)
         {

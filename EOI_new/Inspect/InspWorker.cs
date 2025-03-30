@@ -34,14 +34,17 @@ namespace EOI_new.Inspect
                     continue;
 
                 List<InspAlgorithm> inspAlgorithmList = inspWIndow.AlgorithmList;
-                foreach (var algoritm in inspAlgorithmList)
+                foreach (var algorithm in inspAlgorithmList)
                 {
-                    UpdateInspData(algoritm);
+                    UpdateInspData(algorithm);
                 }
             }
 
             foreach (var inspWIndow in inspWindowList)
             {
+                if (inspWIndow is null)
+                    continue;
+
                 inspWIndow.DoInspect(InspectType.InspNone);
                 DisplayResult(inspWIndow, InspectType.InspNone);
             }
@@ -120,23 +123,23 @@ namespace EOI_new.Inspect
 
                 List<Rect> resultArea = new List<Rect>();
                 int resultCnt = algorithm.GetResultRect(out resultArea);
-                if(resultCnt > 0)
+                if (resultCnt > 0)
                 {
                     totalArea.AddRange(resultArea);
                 }
             }
 
-            if (totalArea.Count >= 0)
-            { 
-                //찾은 위치를 이미지상에서 표시
+            if (totalArea.Count > 0)
+            {
                 var cameraForm = MainForm.GetDockForm<InspForm>();
                 if (cameraForm != null)
                 {
                     cameraForm.AddRect(totalArea);
                 }
             }
-
             return true;
+
+
         }
 
     }
